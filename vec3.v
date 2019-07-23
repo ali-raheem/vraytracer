@@ -1,5 +1,4 @@
 module vec3
-// vec3 module for 'Raytracer in a weekend'
   
 import math
 
@@ -24,7 +23,7 @@ pub fn (v Vec) str() string {
   return '($v.i, $v.j, $v.k)'
 }
 
-fn (a Vec) + (b Vec) Vec {
+pub fn (a Vec) + (b Vec) Vec {
   return Vec {
     a.i + b.i,
     a.j + b.j,
@@ -49,6 +48,14 @@ pub fn (a Vec) mul_scalar(t f32) Vec {
   }
 }
 
+// div_scalar Divide Vec by a scalar
+pub fn (a Vec) div_scalar(t f32) Vec {
+  return Vec {
+    a.i / t,
+    a.j / t,
+    a.k / t
+  }
+}
 // dot Calculate dot product between two vec3 Vecs
 pub fn (v Vec) dot(u Vec) f32 {
   return v.i * u.i + v.j * u.j + v.k * u.k
@@ -63,6 +70,11 @@ pub fn (v Vec) cross(u Vec) Vec {
   }
 }
 
+// make_unit Return a unit vector in the direction of Vec.
+pub fn (v Vec) make_unit() Vec {
+  l := v.length()
+  return v.div_scalar(l)
+}
 
 struct RGB {
     r int
@@ -80,10 +92,10 @@ struct Ray {
 }
 
 // at Calculate position along Ray at t.
-fn (r Ray) at(t f32) Vec {
+pub fn (r Ray) at(t f32) Vec {
   return r.a + r.b.mul_scalar(t)
 }
 
-fn (r Ray) str() string {
+pub fn (r Ray) str() string {
  return '$(r.a) + $(r.b) * t' 
 }
