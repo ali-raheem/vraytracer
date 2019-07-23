@@ -14,6 +14,15 @@ pub fn (v Vec) hypotenuse() f32 {
     return v.i * v.i + v.j * v.j + v.k * v.k
 }
 
+pub fn (v Vec) x() f32 {
+    return v.i
+}
+pub fn (v Vec) y() f32 {
+    return v.j
+}
+pub fn (v Vec) z() f32 {
+    return v.k
+}       
 // length Calculate the abs/mangatude of Vec3 as a Vec
 pub fn (v Vec) length() f32 {
   return math.sqrt(v.hypotenuse())
@@ -76,6 +85,14 @@ pub fn (v Vec) make_unit() Vec {
   return v.div_scalar(l)
 }
 
+pub fn (v Vec) to_rgb() RGB {
+  return RGB {
+    int(v.x()),
+      int(v.y()),
+      int(v.z())
+  }
+}
+
 struct RGB {
     r int
     g int
@@ -86,6 +103,14 @@ pub fn (c RGB) str() string {
     return '$c.r $c.g $c.b'
 }
 
+pub fn (c RGB) mul_scalar(k f32) RGB {
+    return RGB{
+               int(f32(c.r) * k),
+               int(f32(c.g) * k),
+               int(f32(c.b) * k)
+               }
+}
+       
 struct Ray {
   a Vec
   b Vec
@@ -98,4 +123,9 @@ pub fn (r Ray) at(t f32) Vec {
 
 pub fn (r Ray) str() string {
  return '$(r.a) + $(r.b) * t' 
+}
+
+// make_unit Return a unit vector in the direction of Vec.
+pub fn (r Ray) make_unit() Vec {
+  return r.b.make_unit()
 }
