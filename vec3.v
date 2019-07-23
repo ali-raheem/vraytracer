@@ -40,7 +40,15 @@ pub fn (a Vec) + (b Vec) Vec {
   }
 }
 
-fn (a Vec) * (b Vec) Vec {
+pub fn (a Vec) - (b Vec) Vec {
+  return Vec {
+    a.i - b.i,
+    a.j - b.j,
+    a.k - b.k
+  }
+}
+
+pub fn (a Vec) * (b Vec) Vec {
   return Vec {
     a.i * b.i,
     a.j * b.j,
@@ -112,8 +120,9 @@ pub fn (c RGB) mul_scalar(k f32) RGB {
 }
        
 struct Ray {
-  a Vec
-  b Vec
+  pub:
+      a Vec
+      b Vec
 }
 
 // at Calculate position along Ray at t.
@@ -129,3 +138,4 @@ pub fn (r Ray) str() string {
 pub fn (r Ray) make_unit() Vec {
   return r.b.make_unit()
 }
+

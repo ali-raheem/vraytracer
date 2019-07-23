@@ -3,7 +3,19 @@
 import math
 import vec3
 
+fn hit_sphere(centre vec3.Vec, radius f32, r vec3.Ray) bool {
+    oc := r.a - centre
+    a := r.b.dot(r.b)
+    b := 2.0 * oc.dot(r.b)
+    c := oc.dot(oc) - radius * radius
+    discriminant := b * b - 4.0 * a * c
+    return (discriminant > 0.0)                                                              
+}
+  
 fn colour(r vec3.Ray) vec3.Vec {
+    if hit_sphere(vec3.Vec{0, 0, -1}, 0.5, r) {
+       return vec3.Vec{1, 0, 0}
+    }
     uv := r.make_unit()
     ic := 0.5*(uv.y() + 1.0)
     a := vec3.Vec{1.0, 1.0, 1.0}
