@@ -4,7 +4,7 @@
 
 ### Current output
 
-![raytrace output](output.ppm)
+![raytrace output](output.png)
 
 converted from output.ppm with gimp
 
