@@ -2,12 +2,15 @@
 
 3-vector for ray tracer in v
 
+### Current output
+
+[raytrace output](output.ppm)
+
 ### Building & Running
 
 `v raytrace.v`
 
 run with `./raytrace > output.ppm`
-
 
 ### Todo
 
