@@ -60,13 +60,12 @@ fn (l HitList) hit(r vec3.Ray, t_min f32, t_max f32) ?HitRecord {
   if(hit_some) {
     return HitRecord{hit_rec.t, hit_rec.p, hit_rec.normal}
   } else {
-   error ('No hit')
+   return error ('No hit')
   }
 }
 
 fn colour(r vec3.Ray, h HitList) vec3.Vec {
     rec := h.hit(r, 0.0001, (1<<31) - 1) or {
-                                           return vec3.Vec{0,0,0}
       uv := r.make_unit()
       ic := 0.5*(uv.y() + 1.0)
       a := vec3.Vec{1.0, 1.0, 1.0}
@@ -92,6 +91,7 @@ fn main() {
     mut h := HitList{[Sphere{vec3.Vec{0,0,0}, 0}; 2], 2}
     h.list[1] = Sphere{vec3.Vec{0, -100.5, -1}, 100}
     h.list[0] = Sphere{vec3.Vec{0, 0, -1}, 0.5}
+//    h.list_size = 0
     for j := f32(ny - 1); j >= 0; j -- {
         for i := f32(0); i < nx; i++ {
             u := i/nx
