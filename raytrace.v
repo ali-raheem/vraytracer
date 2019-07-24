@@ -6,9 +6,9 @@ import rand
 
 const (
        BounceDepth = 50
-       ImageWidth = 800
-       ImageHeight = 400
-       Rays = 1000
+       ImageWidth = 200
+       ImageHeight = 100
+       Rays = 10
 )
 
 
@@ -29,14 +29,14 @@ fn metal_scatter(ray vec3.Ray, rec HitRecord) Reflection {
 fn glass_scatter(ray vec3.Ray, rec HitRecord) Reflection {
    reflected := reflect(ray.b, rec.normal)
    mut ni_over_nt := rec.mat.ref_idx
-   mut out_normal := red.normal.mul_scalar(-1.0) // TODO overload -
-   attenuation = vec3.Vec{1.0, 1.0, 1.0}
-   rdotn := (r.b).dot(rec.normal)
+   mut out_normal := rec.normal.mul_scalar(-1.0) // TODO overload -
+   attenuation := rec.mat.albedo
+   rdotn := (ray.b).dot(rec.normal)
    if rdotn <= 0 {
        out_normal = rec.normal
        ni_over_nt = 1.0 / rec.mat.ref_idx
    }
-   refracted := refract(r.b, out_normal, ni_over_nt) or {
+   refracted := refract(ray.b, out_normal, ni_over_nt) or {
       return Reflection{attenuation, vec3.Ray{rec.p, reflected}}
    }
    return Reflection{attenuation, vec3.Ray{rec.p, refracted}}
@@ -45,12 +45,12 @@ fn reflect(v vec3.Vec, n vec3.Vec) vec3.Vec {
         return v - n.mul_scalar(2.0 * v.dot(n))
 }
 
-fn refract(v vec3.Vec, n vec3.Vec, ni_over_nt f64) ?float {
+fn refract(v vec3.Vec, n vec3.Vec, ni_over_nt f64) ?vec3.Vec {
         uv := v.make_unit()
         dt := uv.dot(n)
-        discriminant = 1.0 - ni_over_nt * ni_over_nt * ( 1.0 - dt * dt)
+        discriminant := 1.0 - ni_over_nt * ni_over_nt * ( 1.0 - dt * dt)
         if discriminant > 0 {
-           return (uv - n.mul_scalar(dt)),mul_scalar(ni_over_nt) - n.mul_scalar(math.sqrt(discriminant))
+           return (uv - n.mul_scalar(dt)).mul_scalar(ni_over_nt) - n.mul_scalar(math.sqrt(discriminant))
         } else {
            return error('No refractiion')
         } 
@@ -189,12 +189,12 @@ fn main() {
     lam1 := Material{ lambertian_scatter, vec3.Vec{0.8, 0.8, 0}, 1, 0} 
     lam2 := Material{ lambertian_scatter, vec3.Vec{0.8, 0.3 , 0.3}, 1, 0} 
     met1 := Material{ metal_scatter, vec3.Vec{0.8, 0.6, 0.2}, 0.8, 0}
-    met2 := Material{ metal_scatter, vec3.Vec{0.8, 0.8, 0.8}, 0.3, 0} 
+    glass1 := Material{ glass_scatter, vec3.Vec{1.0, 1.0, 1.0}, 0.0, 1.5} 
     mut h := HitList{[Sphere{vec3.Vec{0,0,0}, 0, lam1}; 4], 4}
     h.list[0] = Sphere{vec3.Vec{0, -100.5, -1}, 100, lam1}
     h.list[1] = Sphere{vec3.Vec{0, 0, -1}, 0.5, lam2}
     h.list[2] = Sphere{vec3.Vec{1, 0, -1}, 0.5, met1}
-    h.list[3] = Sphere{vec3.Vec{-1, 0, -1}, 0.5, met2}
+    h.list[3] = Sphere{vec3.Vec{-1, 0, -1}, 0.5, glass1}
     
     for j := ny - 1; j >= 0; j -- {
         for i := 0; i < nx; i++ {
