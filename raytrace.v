@@ -6,8 +6,8 @@ import rand
 
 const (
        BounceDepth = 50
-       ImageWidth = 800
-       ImageHeight = 400
+       ImageWidth = 1920
+       ImageHeight = 1080
        Rays = 1000
 )
 
@@ -202,7 +202,7 @@ fn main() {
     cam := Camera{origin, llc, hor, vert}
     lam1 := Material{ lambertian_scatter, vec3.Vec{0.8, 0.8, 0}, 1, 0} 
     lam2 := Material{ lambertian_scatter, vec3.Vec{0.8, 0.3 , 0.3}, 1, 0} 
-    met1 := Material{ metal_scatter, vec3.Vec{0.8, 0.6, 0.2}, 0.8, 0}
+    met1 := Material{ metal_scatter, vec3.Vec{1.0, 0.83, 0}, 0.1, 0}
     glass1 := Material{ glass_scatter, vec3.Vec{1.0, 1.0, 1.0}, 0.0, 1.5} 
     mut h := HitList{[Sphere{vec3.Vec{0,0,0}, 0, lam1}; 4], 4}
     h.list[0] = Sphere{vec3.Vec{0, -100.5, -1}, 100, lam1}

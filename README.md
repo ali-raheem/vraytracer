@@ -1,6 +1,6 @@
 # vRayTracer
 
-Simple raytracer in [vlang](https://vlang.io), learning the language as I go along so plenty of poor design choices, some for educational purposes.. Based on [Ray Tracing in One Weekend](https://github.com/RayTracing/raytracinginoneweekend).
+Simple raytracer in [vlang](https://vlang.io), learning the language as I go along so plenty of poor design choices, some for educational purposes. Based on [Ray Tracing in One Weekend](https://github.com/RayTracing/raytracinginoneweekend).
 
 ### Current output
 
@@ -19,9 +19,9 @@ Run with `./raytrace > output.ppm`
 * Use Interfaces once working
 * Use None instead of error once working
 * Ensure overloading is used everywhere once working //TODO
-* Add Materials struct
 * Read an JSON input file
-* Start Dialectrics
+* Camera pos/fov
+* Focal distance
 
 ### Complete
 
@@ -32,4 +32,5 @@ Run with `./raytrace > output.ppm`
 * Scattering
 * Lambertian material
 * Metal material
+* Dialectric material
 
