@@ -24,8 +24,8 @@ fn colour(r vec3.Ray) vec3.Vec {
 }
 
 fn main() {
-    mut nx := 200
-    mut ny := 100
+    mut nx := 800
+    mut ny := 400
     println('P3')
     println('$nx $ny')
     println('255')

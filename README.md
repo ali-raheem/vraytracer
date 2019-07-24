@@ -6,7 +6,7 @@
 
 ![raytrace output](output.png)
 
-converted from output.ppm with gimp
+Output is ppm but this is converted with imagemagick `convert output.ppm output.png`
 
 ### Building & Running
 

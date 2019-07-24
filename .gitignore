@@ -1,3 +1,6 @@
+.raytrace.c
 .main.c
 .vec3.o.c
+.a.out.c
 *.o
+*.c
