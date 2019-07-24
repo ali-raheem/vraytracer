@@ -4,18 +4,34 @@ import math
 import vec3
 import rand
 
+interface Materialer {
+  scatter(ray vec3.Ray, rec HitRecord) Reflection
+}
+
+struct Lambertian {
+   albedo vec3.Vec
+}
+       
+fn (l Lambertian) scatter(ray vec3.Ray, rec HitRecord) Reflection {
+    target := rec.p + rec.normal + random_point_in_sphere()
+    scattered := vec3.Ray{rec.p, target}
+    attenuation := l.albedo
+    return Reflection{attenuation, scattered}
+}
+
+  
 struct HitRecord {
   mut:
       t f32
       p vec3.Vec
       normal vec3.Vec
-      mat Lambertian
+      mat Materialer
 }
 
 struct Sphere {
   centre vec3.Vec
   radius f32
-  mat Lambertian
+  mat Materialer
 }
 
 
@@ -101,21 +117,7 @@ fn reflect(v vec3.Vec, n vec3.Vec) vec3.Vec {
         return v - n.mul_scalar(2.0 * v.dot(n))
 }
 
-interface Materialer {
-    scatter(r vec3.Ray, rec HitRecord) Reflection
-//    albedo vec3.Vec
-}
 
-struct Lambertian {
-   albedo vec3.Vec
-}
-       
-fn (l Lambertian) scatter(ray vec3.Ray, rec HitRecord) Reflection {
-    target := rec.p + rec.normal + random_point_in_sphere()
-    scattered := vec3.Ray{rec.p, target}
-    attenuation := l.albedo
-    return Reflection{attenuation, scattered}
-}
 
 struct Camera {
     origin vec3.Vec
@@ -155,11 +157,12 @@ fn main() {
     vert := vec3.Vec{0, 2, 0}
     origin := vec3.Vec{0, 0, 0}
     cam := Camera{origin, llc, hor, vert}
-    mut h := HitList{[Sphere{vec3.Vec{0,0,0}, 0, Lambertian{vec3.Vec{1.0,1.0,1.0}}}; 4], 4}
-    h.list[0] = Sphere{vec3.Vec{0, -100.5, -1}, 100, Lambertian{vec3.Vec{1.0,1.0,1.0}}}
-    h.list[1] = Sphere{vec3.Vec{0, 0, -1}, 0.5, Lambertian{vec3.Vec{1.0,1.0,1.0}}}
-    h.list[2] = Sphere{vec3.Vec{0.1, 0, -0.5}, 0.1, Lambertian{vec3.Vec{1.0,1.0,1.0}}}
-    h.list[3] = Sphere{vec3.Vec{-0.1, 0, -0.5}, 0.1, Lambertian{vec3.Vec{1.0,1.0,1.0}}}
+    lam := Lambertian{vec3.Vec{0.1, 0.1, 0.1}}
+    mut h := HitList{[Sphere{vec3.Vec{0,0,0}, 0, lam}; 4], 4}
+    h.list[0] = Sphere{vec3.Vec{0, -100.5, -1}, 100, lam}
+    h.list[1] = Sphere{vec3.Vec{0, 0, -1}, 0.5, lam}
+    h.list[2] = Sphere{vec3.Vec{0.1, 0, -0.5}, 0.1, lam}
+    h.list[3] = Sphere{vec3.Vec{-0.1, 0, -0.5}, 0.1, lam}
     for j := ny - 1; j >= 0; j -- {
         for i := 0; i < nx; i++ {
             mut c := vec3.Vec{0, 0, 0}
