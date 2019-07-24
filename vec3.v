@@ -95,16 +95,16 @@ pub fn (v Vec) make_unit() Vec {
 
 pub fn (v Vec) to_rgb() RGB {
   return RGB {
-    int(v.x()),
-      int(v.y()),
-      int(v.z())
+    u8(v.x()),
+    u8(v.y()),
+    u8(v.z())
   }
 }
 
 struct RGB {
-    r int
-    g int
-    b int
+    r u8
+    g u8
+    b u8
 }
 
 pub fn (c RGB) str() string {
@@ -113,9 +113,9 @@ pub fn (c RGB) str() string {
 
 pub fn (c RGB) mul_scalar(k f32) RGB {
     return RGB{
-               int(f32(c.r) * k),
-               int(f32(c.g) * k),
-               int(f32(c.b) * k)
+               u8(f32(c.r) * k),
+               u8(f32(c.g) * k),
+               u8(f32(c.b) * k)
                }
 }
        
