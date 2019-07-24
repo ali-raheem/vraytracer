@@ -1,6 +1,6 @@
-# vec3
+# vRayTracer
 
-3-vector for ray tracer in v
+Simple raytracer in [vlang](https://vlang.io), learning the language as I go along so plenty of poor design choices, some for educational purposes.. Based on [Ray Tracing in One Weekend](https://github.com/RayTracing/raytracinginoneweekend).
 
 ### Current output
 
@@ -10,9 +10,9 @@ Output is ppm but this is converted with imagemagick `convert output.ppm output.
 
 ### Building & Running
 
-`v raytrace.v`
+I haven't got vlang modules working yet, move `vec3.v` into your `vlang-path/vlib/vec3` directory and compile with `v raytrace.v`.
 
-run with `./raytrace > output.ppm`
+Run with `./raytrace > output.ppm`
 
 ### Todo
 
