@@ -2,7 +2,7 @@
   
 import math
 import vec3
-
+import rand
 
 struct HitRecord {
   mut:
@@ -89,9 +89,14 @@ fn (c Camera) get_ray(u f32, v f32) vec3.Ray {
    return vec3.Ray{c.origin, c.lower_left_corner + c.horizontal.mul_scalar(u) + c.vertical.mul_scalar(v) - c.origin}
 }
 
+fn randf32() f32 {
+   return f32(rand.next(255))/256.0
+}
+       
 fn main() {
-    mut nx := 800
-    mut ny := 400
+    nx := 800
+    ny := 400
+    ns := 100
     println('P3')
     println('$nx $ny')
     println('255')
@@ -103,14 +108,16 @@ fn main() {
     mut h := HitList{[Sphere{vec3.Vec{0,0,0}, 0}; 2], 2}
     h.list[1] = Sphere{vec3.Vec{0, -100.5, -1}, 100}
     h.list[0] = Sphere{vec3.Vec{0, 0, -1}, 0.5}
-//    h.list_size = 0
-    for j := f32(ny - 1); j >= 0; j -- {
-        for i := f32(0); i < nx; i++ {
-            u := i/nx
-            v := j/ny
-            r := cam.get_ray(u, v)
-            c := colour(r, h)
-            d := c.mul_scalar(255.99).to_rgb()
+    for j := ny - 1; j >= 0; j -- {
+        for i := 0; i < nx; i++ {
+            mut c := vec3.Vec{0, 0, 0}
+            for s := 0; s < ns; s++ {
+                u := (f32(i) + randf32())/f32(nx)
+                v := (f32(j) + randf32())/f32(ny)
+                r := cam.get_ray(u, v)
+                c = c + colour(r, h)
+            }
+            d := c.div_scalar(ns).mul_scalar(255.99).to_rgb()
            println(d)
         }  
     }
