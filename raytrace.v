@@ -6,9 +6,9 @@ import rand
 
 const (
        BounceDepth = 50
-       ImageWidth = 200
-       ImageHeight = 100
-       Rays = 10
+       ImageWidth = 800
+       ImageHeight = 400
+       Rays = 1000
 )
 
 
@@ -28,6 +28,7 @@ fn metal_scatter(ray vec3.Ray, rec HitRecord) Reflection {
 
 fn glass_scatter(ray vec3.Ray, rec HitRecord) Reflection {
    reflected := reflect(ray.b, rec.normal)
+   mut cosine := 0.0
    mut ni_over_nt := rec.mat.ref_idx
    mut out_normal := rec.normal.mul_scalar(-1.0) // TODO overload -
    attenuation := rec.mat.albedo
@@ -35,9 +36,17 @@ fn glass_scatter(ray vec3.Ray, rec HitRecord) Reflection {
    if rdotn <= 0 {
        out_normal = rec.normal
        ni_over_nt = 1.0 / rec.mat.ref_idx
+       cosine = - ((ray.b).dot(rec.normal)) / ray.b.length()
+   } else {
+// Note ni_over_nt, out_normal set default
+       cosine = rec.mat.ref_idx * ((ray.b).dot(rec.normal)) / ray.b.length()
    }
    refracted := refract(ray.b, out_normal, ni_over_nt) or {
       return Reflection{attenuation, vec3.Ray{rec.p, reflected}}
+   }
+   reflect_p := schlick(cosine, rec.mat.ref_idx)
+   if reflect_p > randf64() {
+     return Reflection{attenuation, vec3.Ray{rec.p, reflected}}
    }
    return Reflection{attenuation, vec3.Ray{rec.p, refracted}}
 }
@@ -56,6 +65,11 @@ fn refract(v vec3.Vec, n vec3.Vec, ni_over_nt f64) ?vec3.Vec {
         } 
 }
 
+fn schlick(cosine f64, ref_idx f64) f64 {
+  r0 := (1.0 - ref_idx) / (1.0 + ref_idx)
+  r1 := r0 * r0
+  return r1 + (1.0 - r1) * math.pow((1.0 - cosine), 5)
+}
  
 struct Material {
       scatter fn(ray vec3.Ray, rec HitRecord) Reflection
