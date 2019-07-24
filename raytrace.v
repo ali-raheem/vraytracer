@@ -3,18 +3,26 @@
 import math
 import vec3
 
-fn hit_sphere(centre vec3.Vec, radius f32, r vec3.Ray) bool {
+fn hit_sphere(centre vec3.Vec, radius f32, r vec3.Ray) f32 {
     oc := r.a - centre
     a := r.b.dot(r.b)
     b := 2.0 * oc.dot(r.b)
     c := oc.dot(oc) - radius * radius
     discriminant := b * b - 4.0 * a * c
-    return (discriminant > 0.0)                                                              
+    if (discriminant < 0) {
+       return -1.0
+    } else {
+       return (-b - math.sqrt(discriminant)) / (2.0 * a)
+    }
 }
   
 fn colour(r vec3.Ray) vec3.Vec {
-    if hit_sphere(vec3.Vec{0, 0, -1}, 0.5, r) {
-       return vec3.Vec{1, 0, 0}
+    t := hit_sphere(vec3.Vec{0, 0, -1}, 0.5, r)
+    if (t > 0) {
+       norm := r.at(t) - vec3.Vec{0, 0, -1}
+       unorm := norm.make_unit()
+       N := vec3.Vec{unorm.x() + 1, unorm.y() + 1, unorm.z() + 1}
+       return N.mul_scalar(0.5)
     }
     uv := r.make_unit()
     ic := 0.5*(uv.y() + 1.0)
