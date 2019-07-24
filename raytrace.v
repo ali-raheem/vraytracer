@@ -21,7 +21,7 @@ fn lambertian_scatter(ray vec3.Ray, rec HitRecord) Reflection {
 
 fn metal_scatter(ray vec3.Ray, rec HitRecord) Reflection {
     reflected := reflect((ray.b).make_unit(), rec.normal)
-    scattered := vec3.Ray{rec.p, reflected}
+    scattered := vec3.Ray{rec.p, reflected + random_point_in_sphere().mul_scalar(rec.fuzz)}
     attenuation := rec.albedo
     return Reflection{attenuation, scattered}
 }
@@ -38,6 +38,7 @@ struct HitRecord {
       normal vec3.Vec
       scatter fn(ray vec3.Ray, rec HitRecord) Reflection
       albedo vec3.Vec
+      fuzz f64
 }
 
 struct Sphere {
@@ -45,6 +46,7 @@ struct Sphere {
   radius f64
   scatter fn(ray vec3.Ray, rec HitRecord) Reflection
   albedo vec3.Vec
+  fuzz f64
 }
 
 
@@ -60,7 +62,7 @@ fn (s Sphere) hit(r vec3.Ray, t_min f64, t_max f64) ?HitRecord {
        (-b + math.sqrt(discriminant))/(2.0 * a)
     }
     if (temp > t_min && temp < t_max) {
-      return HitRecord{temp, r.at(temp), (r.at(temp) - s.centre).div_scalar(s.radius), s.scatter, s.albedo}
+      return HitRecord{temp, r.at(temp), (r.at(temp) - s.centre).div_scalar(s.radius), s.scatter, s.albedo, s.fuzz}
     }
 
     return error('No hit')
@@ -157,11 +159,11 @@ fn main() {
     cam := Camera{origin, llc, hor, vert}
 //    lam := Lambertian{vec3.Vec{0.1, 0.1, 0.1}}
 //    metal := Metal{vec3.Vec{0.8, 0.8, 0.8}}
-    mut h := HitList{[Sphere{vec3.Vec{0,0,0}, 0, lambertian_scatter, vec3.Vec{0,0,0}}; 4], 4}
-    h.list[0] = Sphere{vec3.Vec{0, -100.5, -1}, 100, lambertian_scatter, vec3.Vec{0.8, 0.8, 0.0}}
-    h.list[1] = Sphere{vec3.Vec{0, 0, -1}, 0.5, lambertian_scatter, vec3.Vec{0.8, 0.3, 0.3}}
-    h.list[2] = Sphere{vec3.Vec{1, 0, -1}, 0.5, metal_scatter, vec3.Vec{0.8, 0.6, 0.2}}
-    h.list[3] = Sphere{vec3.Vec{-1, 0, -1}, 0.5, metal_scatter, vec3.Vec{0.8, 0.8, 0.8}}
+    mut h := HitList{[Sphere{vec3.Vec{0,0,0}, 0, lambertian_scatter, vec3.Vec{0,0,0}, 1}; 4], 4}
+    h.list[0] = Sphere{vec3.Vec{0, -100.5, -1}, 100, lambertian_scatter, vec3.Vec{0.8, 0.8, 0.0}, 1}
+    h.list[1] = Sphere{vec3.Vec{0, 0, -1}, 0.5, lambertian_scatter, vec3.Vec{0.8, 0.3, 0.3}, 1}
+    h.list[2] = Sphere{vec3.Vec{1, 0, -1}, 0.5, metal_scatter, vec3.Vec{0.8, 0.6, 0.2}, 0.8}
+    h.list[3] = Sphere{vec3.Vec{-1, 0, -1}, 0.5, metal_scatter, vec3.Vec{0.8, 0.8, 0.8}, 0.3}
     
     for j := ny - 1; j >= 0; j -- {
         for i := 0; i < nx; i++ {
