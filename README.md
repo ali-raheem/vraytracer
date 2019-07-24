@@ -16,6 +16,7 @@ Run with `./raytrace > output.ppm`
 
 ### Todo
 
-* Remove unused functions.
 * Code is a complete and utter mess.
 * For some reason can't get v to use lib objects, copy vec3.v to v_path/v/vlib/vec3
+* Can't get interfaces to work due to Clang error
+* Non-deterministic runs!!! - WTF
