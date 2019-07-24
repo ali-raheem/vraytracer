@@ -78,6 +78,17 @@ fn colour(r vec3.Ray, h HitList) vec3.Vec {
 
 }
 
+struct Camera {
+    origin vec3.Vec
+    lower_left_corner vec3.Vec
+    horizontal vec3.Vec
+    vertical vec3.Vec
+}
+
+fn (c Camera) get_ray(u f32, v f32) vec3.Ray {
+   return vec3.Ray{c.origin, c.lower_left_corner + c.horizontal.mul_scalar(u) + c.vertical.mul_scalar(v) - c.origin}
+}
+
 fn main() {
     mut nx := 800
     mut ny := 400
@@ -88,6 +99,7 @@ fn main() {
     hor := vec3.Vec{4, 0, 0}
     vert := vec3.Vec{0, 2, 0}
     origin := vec3.Vec{0, 0, 0}
+    cam := Camera{origin, llc, hor, vert}
     mut h := HitList{[Sphere{vec3.Vec{0,0,0}, 0}; 2], 2}
     h.list[1] = Sphere{vec3.Vec{0, -100.5, -1}, 100}
     h.list[0] = Sphere{vec3.Vec{0, 0, -1}, 0.5}
@@ -96,7 +108,7 @@ fn main() {
         for i := f32(0); i < nx; i++ {
             u := i/nx
             v := j/ny
-            r := vec3.Ray{origin, llc + hor.mul_scalar(u) + vert.mul_scalar(v)}
+            r := cam.get_ray(u, v)
             c := colour(r, h)
             d := c.mul_scalar(255.99).to_rgb()
            println(d)
