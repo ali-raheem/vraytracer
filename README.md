@@ -10,7 +10,7 @@ Output is ppm but this is converted with imagemagick `convert output.ppm output.
 
 ### Building & Running
 
-Compile with `v -prod raytrace`
+Compile with `v -o bin/raytrace -prod raytrace.v`
 Run with `./raytrace > output.ppm`
 
 ### Todo
@@ -20,4 +20,16 @@ Run with `./raytrace > output.ppm`
 * Use None instead of error once working
 * Ensure overloading is used everywhere once working //TODO
 * Add Materials struct
+* Read an JSON input file
 * Start Dialectrics
+
+### Complete
+
+* PPM output
+* Fuzz
+* Albedo
+* Reflection
+* Scattering
+* Lambertian material
+* Metal material
+
