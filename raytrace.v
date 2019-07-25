@@ -4,6 +4,9 @@ import math
 import vec3
 import rand
 
+import flag
+import os
+
 const (
        BounceDepth = 50
        ImageWidth = 1920
@@ -189,9 +192,19 @@ fn random_point_in_sphere() vec3.Vec {
 }
        
 fn main() {
-    nx := ImageWidth
-    ny := ImageHeight
-    ns := Rays
+
+    mut fp := flag.new_flag_parser(os.args)
+    fp.application('raytrace')
+    fp.description('Simple raytracer written in V')
+    help := fp.bool('help', false, 'Show this usage information')
+    ns := fp.int('rays', Rays, 'The number of rays raytraced for each pixel of the image')
+    nx := fp.int('width', ImageWidth, 'The width of the generated image')
+    ny := fp.int('height', ImageHeight, 'The height of the generated image')
+    if(help){
+      println(fp.usage())
+      return
+    }
+          
     println('P3')
     println('$nx $ny')
     println('255')
