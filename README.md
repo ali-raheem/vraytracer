@@ -16,12 +16,16 @@ Run with `./raytrace > output.ppm`
 ### Todo
 
 * Code is a complete and utter mess.
+  - Move Ray into module
+  - Ray tracer module
+* Take scene input from file
+* Camera pos/fov
+* Focal distance
+
+#### Waiting on vlang for 
 * Use Interfaces once working
 * Use None instead of error once working
 * Ensure overloading is used everywhere once working //TODO
-* Read an JSON input file
-* Camera pos/fov
-* Focal distance
 
 ### Complete
 
@@ -33,4 +37,4 @@ Run with `./raytrace > output.ppm`
 * Lambertian material
 * Metal material
 * Dialectric material
-
+* Command line arguments to image size (thanks [spytheman](https://github.com/spytheman).)
