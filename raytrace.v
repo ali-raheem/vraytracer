@@ -4,6 +4,9 @@ import math
 import vec3
 import rand
 
+import flag
+import os
+
 const (
        BounceDepth = 50
        ImageWidth = 1920
@@ -134,7 +137,7 @@ fn (l HitList) hit(r vec3.Ray, t_min f64, t_max f64) ?HitRecord {
   }
 }
 
-fn colour(r vec3.Ray, h HitList, depth int) vec3.Vec {
+fn colour(r vec3.Ray, h HitList, depth int, maxdepth int) vec3.Vec {
     rec := h.hit(r, 0.001, (1<<31) - 1) or {
       uv := r.make_unit()
       ic := 0.5*(uv.y() + 1.0)
@@ -143,11 +146,11 @@ fn colour(r vec3.Ray, h HitList, depth int) vec3.Vec {
       return a.mul_scalar(1.0 - ic) + b.mul_scalar(ic)
    }
 
-   if (depth < BounceDepth) {
+   if (depth < maxdepth) {
        scatterfn := rec.mat.scatter
        ref := scatterfn(r, rec)
        atten := ref.attenuation
-       scat := colour(ref.scatter, h, depth + 1)
+       scat := colour(ref.scatter, h, depth + 1, maxdepth)
 // TODO why can't I overload here?
        return mul(atten, scat)
    } else {
@@ -189,9 +192,20 @@ fn random_point_in_sphere() vec3.Vec {
 }
        
 fn main() {
-    nx := ImageWidth
-    ny := ImageHeight
-    ns := Rays
+
+    mut fp := flag.new_flag_parser(os.args)
+    fp.application('raytrace')
+    fp.description('Simple raytracer written in V')
+    help := fp.bool('help', false, 'Show this usage information')
+    ns := fp.int('rays', Rays, 'The number of rays raytraced for each pixel of the image')
+    nx := fp.int('width', ImageWidth, 'The width of the generated image')
+    ny := fp.int('height', ImageHeight, 'The height of the generated image')
+    bouncedepth := fp.int('bouncedepth', BounceDepth, 'The maximum amount of bounces the rays are allowed to do')
+    if(help){
+      println(fp.usage())
+      return
+    }
+          
     println('P3')
     println('$nx $ny')
     println('255')
@@ -217,7 +231,7 @@ fn main() {
                 u := (f64(i) + randf64())/f64(nx)
                 v := (f64(j) + randf64())/f64(ny)
                 r := cam.get_ray(u, v)
-                c = c + colour(r, h, 0)
+                c = c + colour(r, h, 0, bouncedepth)
             }
             c = c.div_scalar(ns)
             c = vec3.Vec{math.sqrt(c.x()), math.sqrt(c.y()), math.sqrt(c.z())}
