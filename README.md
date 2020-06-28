@@ -1,4 +1,6 @@
-# vRayTracer
+# vRayTracer f64 branch
+
+**This is the branch using f64 for better precision but slower performance**
 
 Simple raytracer in [vlang](https://vlang.io), learning the language as I go along so plenty of poor design choices, some for educational purposes. Based on [Ray Tracing in One Weekend](https://github.com/RayTracing/raytracinginoneweekend).
 
