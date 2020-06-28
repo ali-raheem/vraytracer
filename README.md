@@ -25,7 +25,7 @@ Run with `./raytrace > output.ppm`
 #### Waiting on vlang for 
 * Use Interfaces once working
 * Use None instead of error once working
-* Ensure overloading is used everywhere once working //TODO
+~~* Ensure overloading is used everywhere once working //TODO~~
 
 ### Complete
 
