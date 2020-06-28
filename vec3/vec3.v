@@ -1,36 +1,36 @@
 module vec3
 
-// vec3 module 3 dimentional f64 vector with associated methods
+// vec3 module 3 dimentional f32 vector with associated methods
 import math
 
 // Vec 3-Vector structure
 pub struct Vec {
 mut:
-	i f64
-	j f64
-	k f64
+	i f32
+	j f32
+	k f32
 }
 
 // hypotenuse Calculate the displacement due to Vec
-pub fn (v Vec) hypotenuse() f64 {
+pub fn (v Vec) hypotenuse() f32 {
 	return v.i * v.i + v.j * v.j + v.k * v.k
 }
 
-pub fn (v Vec) x() f64 {
+pub fn (v Vec) x() f32 {
 	return v.i
 }
 
-pub fn (v Vec) y() f64 {
+pub fn (v Vec) y() f32 {
 	return v.j
 }
 
-pub fn (v Vec) z() f64 {
+pub fn (v Vec) z() f32 {
 	return v.k
 }
 
 // length Calculate the abs/mangatude of Vec3 as a Vec
-pub fn (v Vec) length() f64 {
-	return math.sqrt(v.hypotenuse())
+pub fn (v Vec) length() f32 {
+	return math.sqrtf(v.hypotenuse())
 }
 
 pub fn (v Vec) str() string {
@@ -50,17 +50,17 @@ pub fn (a Vec) *(b Vec) Vec {
 }
 
 // mul_scalar Multiple a vec3 Vec by a scalar
-pub fn (a Vec) mul_scalar(t f64) Vec {
+pub fn (a Vec) mul_scalar(t f32) Vec {
 	return Vec{a.i * t, a.j * t, a.k * t}
 }
 
 // div_scalar Divide Vec by a scalar
-pub fn (a Vec) div_scalar(t f64) Vec {
+pub fn (a Vec) div_scalar(t f32) Vec {
 	return Vec{a.i / t, a.j / t, a.k / t}
 }
 
 // dot Calculate dot product between two vec3 Vecs
-pub fn (v Vec) dot(u Vec) f64 {
+pub fn (v Vec) dot(u Vec) f32 {
 	return v.i * u.i + v.j * u.j + v.k * u.k
 }
 
@@ -84,7 +84,7 @@ pub fn (v Vec) to_rgb() RGB {
 }
 
 // RGB structure to hold RED GREEN BLUE
-struct RGB {
+pub struct RGB {
 	r byte
 	g byte
 	b byte
@@ -94,8 +94,8 @@ pub fn (c RGB) str() string {
 	return '$c.r $c.g $c.b'
 }
 
-pub fn (c RGB) mul_scalar(k f64) RGB {
-	return RGB{byte(f64(c.r) * k), byte(f64(c.g) * k), byte(f64(c.b) * k)}
+pub fn (c RGB) mul_scalar(k f32) RGB {
+	return RGB{byte(f32(c.r) * k), byte(f32(c.g) * k), byte(f32(c.b) * k)}
 }
 
 // Ray strcture holding source and destination Vecs
@@ -106,7 +106,7 @@ pub:
 }
 
 // at Calculate position along Ray at time t.
-pub fn (r Ray) at(t f64) Vec {
+pub fn (r Ray) at(t f32) Vec {
 	return r.a + r.b.mul_scalar(t)
 }
 
