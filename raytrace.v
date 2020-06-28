@@ -190,7 +190,7 @@ fn random_point_in_sphere() vec3.Vec {
 fn main() {
 	mut fp := flag.new_flag_parser(os.args)
 	fp.application('raytrace')
-	fp.version('v0.0.46')
+	fp.version('f32:v0.0.47')
 	fp.description('Simple raytracer written in V')
 	fp.skip_executable()
 	help := fp.bool('help', 0, false, 'Show this usage information')

@@ -2,6 +2,8 @@
 
 Simple raytracer in [vlang](https://vlang.io), learning the language as I go along so plenty of poor design choices, some for educational purposes. Based on [Ray Tracing in One Weekend](https://github.com/RayTracing/raytracinginoneweekend).
 
+See f64 branch for more precise but slower implementation using 64 bit floats instead of 32bit.
+
 ### Current output
 
 ![raytrace output](output.png)
