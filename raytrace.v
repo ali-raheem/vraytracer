@@ -28,7 +28,7 @@ fn metal_scatter(ray vec3.Ray, rec HitRecord) Reflection {
 
 fn glass_scatter(ray vec3.Ray, rec HitRecord) Reflection {
 	reflected := reflect(ray.b, rec.normal)
-	mut cosine := 0.0
+	mut cosine := f32(0.0)
 	mut ni_over_nt := rec.mat.ref_idx
 	mut out_normal := rec.normal.mul_scalar(-1.0)
 	attenuation := rec.mat.albedo
@@ -45,7 +45,7 @@ fn glass_scatter(ray vec3.Ray, rec HitRecord) Reflection {
 		return Reflection{attenuation, vec3.Ray{rec.p, reflected}}
 	}
 	reflect_p := schlick(cosine, rec.mat.ref_idx)
-	if reflect_p > rand.f64() {
+	if reflect_p > rand.f32() {
 		return Reflection{attenuation, vec3.Ray{rec.p, reflected}}
 	}
 	return Reflection{attenuation, vec3.Ray{rec.p, refracted}}
@@ -55,33 +55,33 @@ fn reflect(v, n vec3.Vec) vec3.Vec {
 	return v - n.mul_scalar(2.0 * v.dot(n))
 }
 
-fn refract(v, n vec3.Vec, ni_over_nt f64) ?vec3.Vec {
+fn refract(v, n vec3.Vec, ni_over_nt f32) ?vec3.Vec {
 	uv := v.make_unit()
 	dt := uv.dot(n)
-	discriminant := 1.0 - ni_over_nt * ni_over_nt * (1.0 - dt * dt)
+	discriminant := f32(1.0 - ni_over_nt * ni_over_nt * (1.0 - dt * dt))
 	if discriminant > 0 {
-		return (uv - n.mul_scalar(dt)).mul_scalar(ni_over_nt) - n.mul_scalar(math.sqrt(discriminant))
+		return (uv - n.mul_scalar(dt)).mul_scalar(ni_over_nt) - n.mul_scalar(math.sqrtf(discriminant))
 	} else {
 		return error('No refractiion')
 	}
 }
 
-fn schlick(cosine, ref_idx f64) f64 {
+fn schlick(cosine f32, ref_idx f32) f32 {
 	r0 := (1.0 - ref_idx) / (1.0 + ref_idx)
 	r1 := r0 * r0
-	return r1 + (1.0 - r1) * math.pow((1.0 - cosine), 5)
+	return r1 + (1.0 - r1) * math.powf((1.0 - cosine), 5)
 }
 
 struct Material {
-	scatter anon_fn_31_32_33
+	scatter fn(ray vec3.Ray, rec HitRecord) Reflection
 	albedo  vec3.Vec
-	fuzz    f64
-	ref_idx f64
+	fuzz    f32
+	ref_idx f32
 }
 
 struct HitRecord {
 mut:
-	t      f64
+	t      f32
 	p      vec3.Vec
 	normal vec3.Vec
 	mat    Material
@@ -89,18 +89,18 @@ mut:
 
 struct Sphere {
 	centre vec3.Vec
-	radius f64
+	radius f32
 	mat    Material
 }
 
 // hit Method on Sphere to detect a hit using pythagoras
-fn (s Sphere) hit(r vec3.Ray, t_min, t_max f64) ?HitRecord {
+fn (s Sphere) hit(r vec3.Ray, t_min, t_max f32) ?HitRecord {
 	oc := r.a - s.centre
 	a := r.b.dot(r.b)
 	b := 2.0 * oc.dot(r.b)
 	c := oc.dot(oc) - s.radius * s.radius
 	discriminant := b * b - 4.0 * a * c
-	temp := if discriminant > 0 { (-b - math.sqrt(discriminant)) / (2.0 * a) } else { (-b + math.sqrt(discriminant)) /
+	temp := if discriminant > 0 { (-b - math.sqrtf(discriminant)) / (2.0 * a) } else { (-b + math.sqrtf(discriminant)) /
 			(2.0 * a) }
 	if temp > t_min && temp < t_max {
 		mat := Material{s.mat.scatter, s.mat.albedo, s.mat.fuzz, s.mat.ref_idx}
@@ -117,7 +117,7 @@ mut:
 }
 
 // hit Takes light ray and returns option of hit_rec
-fn (l HitList) hit(r vec3.Ray, t_min, t_max f64) ?HitRecord {
+fn (l HitList) hit(r vec3.Ray, t_min, t_max f32) ?HitRecord {
 	mut closest := t_max
 	mut hit_some := false
 	mut hit_rec := HitRecord{}
@@ -173,14 +173,14 @@ struct Camera {
 	vertical          vec3.Vec
 }
 
-fn (c Camera) get_ray(u, v f64) vec3.Ray {
+fn (c Camera) get_ray(u, v f32) vec3.Ray {
 	return vec3.Ray{c.origin, c.lower_left_corner + c.horizontal.mul_scalar(u) + c.vertical.mul_scalar(v) -
 		c.origin}
 }
 
 fn random_point_in_sphere() vec3.Vec {
 	for {
-		p := (vec3.Vec{rand.f64(), rand.f64(), rand.f64()} - vec3.Vec{1, 1, 1}).mul_scalar(2)
+		p := (vec3.Vec{rand.f32(), rand.f32(), rand.f32()} - vec3.Vec{1, 1, 1}).mul_scalar(2)
 		if p.hypotenuse() < 1 {
 			return vec3.Vec{p.x(), p.y(), p.z()}
 		}
@@ -226,13 +226,13 @@ fn main() {
 			mut c := vec3.Vec{0, 0, 0}
 			for s := 0; s < ns; s++
 			 {
-				u := (f64(i) + rand.f64()) / f64(nx)
-				v := (f64(j) + rand.f64()) / f64(ny)
+				u := (f32(i) + rand.f32()) / f32(nx)
+				v := (f32(j) + rand.f32()) / f32(ny)
 				r := cam.get_ray(u, v)
 				c = c + colour(r, h, 0, bouncedepth)
 			}
 			c = c.div_scalar(ns)
-			c = vec3.Vec{math.sqrt(c.x()), math.sqrt(c.y()), math.sqrt(c.z())}
+			c = vec3.Vec{math.sqrtf(c.x()), math.sqrtf(c.y()), math.sqrtf(c.z())}
 			d := c.mul_scalar(255.99).to_rgb()
 			println(d)
 		}
